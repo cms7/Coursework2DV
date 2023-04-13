@@ -1,0 +1,22 @@
+Round,Country,City,Circuit_Name,GP_Name,Race_Date,First_GP,Number_of_Laps,Circuit_Length_km,Race_Distance_km,Lap_Record,Record_Owner,Record_Year,Turns,DRS_Zones,Lat,Lng
+1,Bahrain,Sakhir,Bahrain International Circuit,Bahrain,28/03/2021,2004,57,5.412,308.238,01:31.4,Pedro de la Rosa,2005,15,3,26.0325,50.5106
+2,Italy,Imola,Autodromo Enzo e Dino Ferrari,Emilia Romagna,18/04/2021,1980,63,4.909,309.049,01:15.5,Lewis Hamilton,2020,19,1,26.0325,50.5106
+3,Portugal,Portimao,Autodromo Internacional do Algarve,Portugal,02/05/2021,2020,66,4.653,306.826,01:18.7,Lewis Hamilton,2020,15,1,37.227,-8.6267
+4,Spain,Catalunya,Circuit de Barcelona-Catalunya,Spain,09/05/2021,1991,66,4.675,308.424,01:18.1,Max Verstappen,2021,16,2,41.57,2.26111
+5,Monaco,Monte Carlo,Circuit de Monaco,Monaco,23/05/2021,1950,78,3.337,260.286,01:12.9,Lewis Hamilton,2021,19,1,43.7347,7.42056
+6,Azerbaijan,Baku,Baku City Circuit,Azerbaijan,06/06/2021,2016,51,6.003,306.049,01:43.0,Charles Leclerc,2019,20,2,40.3725,49.8533
+7,France,Le Castellet,Circuit Paul Ricard,France,20/06/2021,1971,53,5.842,309.69,01:32.7,Sebastian Vettel,2019,15,2,43.2506,5.79167
+8,Austria,Spielberg,Red Bull Ring,Styria,04/07/2021,1970,71,4.318,306.452,01:05.6,Carlos Sainz,2020,10,3,47.2197,14.7647
+9,Great Britain,Siverstone,Silverstone Circuit,Great Britain,18/07/2021,1950,52,5.891,306.198,01:27.1,Max Verstappen,2020,18,2,52.0786,-1.01694
+10,Hungary,Budapest,Hungaroring,Hungary,01/08/2021,1986,70,4.381,306.63,0.060034722,Lewis Hamilton,2020,14,1,47.5789,19.2486
+11,Belgium,Spa-Francorchamps,Circuit de Spa-Francorchamps,Belgium,29/08/2021,1950,44,7.004,308.052,01:48.3,Valtteri Bottas,2018,19,2,50.4372,5.97139
+12,Netherlands,Zandvoort,Circuit Zandvoort,Dutch,05/09/2021,1952,72,4.259,306.587,01:11.1,Lewis Hamilton,2021,14,2,52.3888,4.54092
+13,Italy,Monza,Autodromo Nazionale Monza,Italy,12/09/2021,1950,53,5.793,306.72,01:21.0,Rubens Barrichello,2004,11,2,45.6156,9.28111
+14,Russia,Sochi,Sochi Autodrom,Russia,26/09/2021,2014,53,5.848,309.745,01:35.8,Lewis Hamilton,2019,18,2,43.4057,39.9578
+15,Turkey,Istanbul,Intercity Istanbul Park,Turkey,10/10/2021,2005,58,5.338,309.396,01:24.8,Juan Pablo Montoya,2005,14,2,40.9517,29.405
+16,United States,Austin,Circuit of the Americas,United States,24/10/2021,2012,56,5.513,308.405,01:36.2,Charles Leclerc,2019,20,2,30.1328,-97.6411
+17,Mexico,Mexico City,Autodromo Hermanos Rodriguez,Mexico,07/11/2021,1963,71,4.304,305.354,01:17.8,Valtteri Bottas,2021,17,3,19.4042,-99.0907
+18,Brazil,Sao Paulo,Autodromo Josa Carlos Pace,Sao Paulo,14/11/2021,1973,71,4.309,305.879,01:10.5,Valtteri Bottas,2018,15,2,-23.7036,-46.6997
+19,Qatar,Losail,Losail International Circuit,Qatar,21/11/2021,2021,57,5.38,306.66,01:23.2,Max Verstappen,2021,16,1,25.49,51.4542
+20,Saudi Arabia,Jeddah,Jeddah Corniche Circuit,Saudi Arabia,05/12/2021,2021,50,6.174,308.45,01:30.7,Lewis Hmailton,2021,27,3,21.6319,39.1044
+21,Abu Dhabi,Yas Island,Yas Marina Circuit,Abu Dhabi,12/12/2021,2009,58,5.281,306.183,01:26.1,Max Verstappen,2021,16,2,24.4672,54.6031

@@ -1,0 +1,371 @@
+<!doctype html>
+<html>
+  <!--Set title of HTML File-->
+  <head>
+    <meta charset="utf-8">
+    <title id="title">Coursework 2 - Formula 1 2021 Season Stats</title>
+    <link rel="stylesheet" href="styles.css">
+  </head>
+
+  <!--Load in scripts-->
+  <script src="https://d3js.org/d3.v7.js"></script>
+  <script src="script.js"></script>
+  <link rel = "stylesheet" href = "Coursework1.css">
+
+<body>
+    <div class = "background">
+        <div class = "headingbar">
+            <img src="formula1-logo.png" class="logo">
+            <ul>
+                <li><a>Formula 1 2021 Season Stats</a></li>
+                <label for="track-select">Select track:</label>
+			          <select id="trackSelect"></select>
+            </ul>
+        </div> 
+        
+        <svg id="map" width="500" height="500"></svg>
+        <svg id="graph" width="500" height="500"></svg>
+        <svg id="scatterplot" width="500" height="500"></svg>
+      
+    </div>
+
+</body>
+
+<script>
+
+// Create svg for choropleth
+const svg = d3.select("svg"),
+    width = +svg.attr("width"),
+    height = +svg.attr("height");
+
+// Map and projection
+const projection = d3.geoMercator()
+    .scale(120)
+    .translate([width / 2, height / 2])
+
+
+// Load in atlas data
+d3.json("https://raw.githubusercontent.com/holtzy/D3-graph-gallery/master/DATA/world.geojson").then( function(data) {
+
+    // create the map
+    svg.append("g")
+        .selectAll("path")
+        .data(data.features)
+        .join("path")
+            .attr("fill", "#a8a8a8")
+            .attr("d", d3.geoPath()
+            .projection(projection)
+            )
+            .style("stroke", "#fff")
+
+    // Add description label
+    svg.append("text")
+        .attr("transform", "translate(" + (width/2) + " ," + (height-85) + ")")
+        .style("text-anchor", "middle")
+        .attr("fill","white")
+        .text("Locations of grand prix races in 2021, click to find out name of circuit");
+})
+// Load the CSV data and plot points on the map
+d3.csv("../f1data/calander2021.csv").then((data) => {
+  // Convert latitude and longitude to numbers
+  const pointsData = data.map((d) => ({
+      country: d.Country,
+      circuit_name: d.Circuit_Name,
+      coordinates: [+d.Lng, +d.Lat],
+    }));
+  // Plot the points on the map
+  const points = d3.select("#map")
+    .selectAll("circle")
+    .data(pointsData)
+    .enter()
+    .append("circle")
+    .attr("cx", (d) => projection(d.coordinates)[0])
+    .attr("cy", (d) => projection(d.coordinates)[1])
+    .attr("r", 5)
+    .attr("fill", "steelblue")
+    .attr("stroke", "white")
+    .attr("stroke-width", 1)
+    .on("click", function(d) { 
+    // This sections allow the user to hover over the data point to find out the name of the track
+    // Clicking a datapoint will cause the point to grow and change colour, clicking off or another 
+    // data point will cause it to return to normal
+     
+      d3.select(this)
+        .append("title")
+        .text(d.target.__data__.circuit_name+" is "+d.target.__data__.country+"'s racetrack");
+        console.log(d)
+    const selected = d3.selectAll('.selected');
+        if (selected.size() > 0 && !d3.select(this).classed('selected')) {
+          // If another point is already selected, deselect it
+          selected.classed('selected', false)
+                  .transition()
+                  .duration(500)
+                  .attr('r', 5)
+                  .select("title")
+                  .remove();
+                
+              }
+              d3.select(this).classed('selected', !d3.select(this).classed('selected'))
+                .transition()
+                .duration(500)
+                .attr('r', d3.select(this).classed('selected') ? 10 : 5);
+
+            });
+});
+// Load in race data for season
+d3.csv("../f1data/raceResults.csv", function(d) {
+	    return {
+		    driver: d.Driver,
+		    points: +d.Points,
+		    track: d.Track
+	  };
+    }).then(function(data) {
+
+      const allGroup = new Set(data.map(d => d.track));
+      // add the options to the button
+      d3.select("#trackSelect")
+        .selectAll('myOptions')
+        .data(allGroup)
+        .enter()
+        .append('option')
+        .text(function (d) { return d; }) // text showed in the menu
+        .attr("value", function (d) { return d; }) // corresponding value returned by the button
+	
+        const margin = {top: 20, right: 10, bottom: 80, left: 50},
+        width = 400 - margin.left - margin.right,
+        height = 400 - margin.top - margin.bottom;
+
+        // append the svg object to the body of the page
+        const svg = d3.select("#graph")
+        .append("svg")
+            .attr("width", width + margin.left + margin.right)
+            .attr("height", height + margin.top + margin.bottom)
+        .append("g")
+            .attr("transform", `translate(${margin.left},${margin.top})`);
+
+        // Add X axis label
+        svg.append("text")
+        .attr("transform", "translate(" + (width) + " ," + (height-10) + ")")
+        .style("text-anchor", "middle")
+        .text("Driver");
+
+        // Add Y axis label
+        svg.append("text")
+        .attr("transform", "rotate(-90)")
+        .attr("y", 0 )
+        .attr("x", 0 - (height / 2))
+        .attr("dy", "1em")
+        .style("text-anchor", "middle")
+        .text("Points");
+
+      // Define the scales and axes
+      const x = d3.scaleBand()
+        .domain(data.map(d => d.driver))
+        .range([0, width])
+        .padding(0.2);
+
+      const y = d3.scaleLinear()
+        .domain([0, 25])
+        .range([height, 0]);
+
+      const xAxis = d3.axisBottom(x);
+      const yAxis = d3.axisLeft(y).ticks(25);
+
+      // Add the x and y axes
+      svg.append("g")
+        .attr("class", "x axis")
+        .attr("transform", "translate(0," + height + ")")
+        .call(xAxis)
+            .selectAll("text")
+            .attr("transform", "translate(-10,0)rotate(-45)")
+            .attr("fill","#fff")
+            .style("text-anchor", "end");
+
+      svg.append("g")
+        .attr("class", "y axis")
+        .call(yAxis);
+
+      // Add the bars
+      svg.selectAll(".bar")
+        .data(data)
+        .enter().append("rect")
+        .attr("class", "bar")
+        .attr("x", d => x(d.driver))
+        .attr("width", x.bandwidth())
+        .attr("y", d => y(+d.points))
+        .attr("height", d => height - y(+d.points));
+
+      svg.append("text")
+        .attr("text-anchor", "end")
+        .attr("transform", "rotate(-90)")
+        .attr("y", -margin.left+20)
+        .attr("x", -margin.top-65)
+        .attr("fill","white")
+        .text("Points Scored at Race")
+
+      // Add the select button event listener
+      const select = d3.select("#trackSelect");
+      select.on("change", function() {
+        // Get the selected track
+        const track = select.node().value;
+
+        // Filter the data based on the selected track
+        const filteredData = data.filter(d => d.track === track);
+              // Update the scales and axes
+      x.domain(filteredData.map(d => d.driver));
+      y.domain([0, d3.max(filteredData, d => +d.points)]);
+      svg.select(".x.axis")
+        .transition()
+        .duration(500)
+        .call(xAxis);
+      svg.select(".y.axis")
+        .transition()
+        .duration(500)
+        .call(yAxis);
+
+      // Update the bars
+      const bars = svg.selectAll(".bar")
+        .data(filteredData, d => d.driver);
+      bars.exit()
+        .transition()
+        .duration(500)
+        .attr("height", 0)
+        .remove();
+
+      bars.enter().append("rect")
+        .attr("class", "bar")
+        .attr("x", d => x(d.driver))
+        .attr("width", x.bandwidth())
+        .attr("y", y(0))
+        .attr("height", 0)
+        .merge(bars)
+        .transition()
+        .duration(500)
+        .attr("x", d => x(d.driver))
+        .attr("width", x.bandwidth())
+        .attr("y", d => y(+d.points))
+        .attr("height", d => height - y(+d.points));
+    });
+
+    // append the svg object to the body of the page
+    const scatter = d3.select("#scatterplot")
+      .append("svg")
+        .attr("width", width + margin.left + margin.right)
+        .attr("height", height + margin.top + margin.bottom)
+        .append("g")
+        .attr("transform",
+              `translate(${margin.left}, ${margin.top})`);
+
+d3.csv("../f1data/teams.csv").then(function(data) {
+
+// Add X axis
+const x = d3.scaleLinear()
+  .domain([0, 650])
+  .range([ 0, width ]);
+scatter.append("g")
+  .attr("transform", `translate(0, ${height})`)
+  .attr("class", "x axis")
+  .call(d3.axisBottom(x));
+
+scatter.append("text")      // text label for the x axis
+      .attr("x", 180 )
+      .attr("y",  345 )
+      .style("text-anchor", "middle")
+      .attr("fill","white")
+      .text("Points Scored at end of season");
+
+scatter.append("text")      // text label for the x axis
+    .attr("x", 180 )
+    .attr("y",  365 )
+    .style("text-anchor", "middle")
+    .attr("fill","white")
+    .attr("font-size","10px")
+    .text("This graph highlights the negative impact of no cost cap");
+
+    scatter.append("text")      // text label for the x axis
+    .attr("x", 180 )
+    .attr("y",  377 )
+    .style("text-anchor", "middle")
+    .attr("fill","white")
+    .attr("font-size","10px")
+    .text("as teams with deeper pockets dominate");
+
+
+// Add Y axis
+const y = d3.scaleLinear()
+  .domain([0, 500])
+  .range([ height, 0]);
+scatter.append("g")
+  .attr("class", "y axis")
+  .call(d3.axisLeft(y));
+
+scatter.append("text")
+      .attr("text-anchor", "end")
+      .attr("transform", "rotate(-90)")
+      .attr("y", -margin.left+15)
+      .attr("x", -margin.top-50)
+      .attr("fill","white")
+      .text("Seasons budget ($million)")
+
+// Add a tooltip div
+const tooltip = d3.select("#scatterplot")
+  .append("div")
+  .style("opacity", 0)
+  .attr("class", "tooltip")
+  .style("background-color", "white")
+  .style("border", "solid")
+  .style("border-width", "1px")
+  .style("border-radius", "5px")
+  .style("padding", "10px");
+
+// Add dots
+scatter.append("g")
+  .selectAll("dot")
+  .data(data.filter(function(d,i){return i}))
+  .enter()
+  .append("circle")
+    .attr("cx", function (d) { return x(d.Points); } )
+    .attr("cy", function (d) { return y(d.Budget); } )
+    .attr("r", 5)
+    .style("fill", "steelblue")
+    .style("stroke", "white")
+    .on("click", function(d) { 
+    
+    d3.select(this)
+      .append("title")
+      .text(d.srcElement.__data__.Full_Team_Name + " spent roughly $"+d.srcElement.__data__.Budget+" million and scored exactly "+d.srcElement.__data__.Points+ " constuctors points in 2021");
+
+      const selected = d3.selectAll('.selected');
+        if (selected.size() > 0 && !d3.select(this).classed('selected')) {
+          // If another point is already selected, deselect it
+          selected.classed('selected', false)
+                  .transition()
+                  .duration(500)
+                  .attr('r', 5)
+                  .select("title")
+                  .remove();
+                
+              }
+              d3.select(this).classed('selected', !d3.select(this).classed('selected'))
+                .transition()
+                .duration(500)
+                .attr('r', d3.select(this).classed('selected') ? 10 : 5);
+  });
+
+
+// Add labels
+scatter.append("g")
+  .selectAll("text")
+  .data(data.filter(function(d,i){return i}))
+  .enter()
+  .append("text")
+    .attr("x", function(d) { return x(d.Points) +5; })
+    .attr("y", function(d) { return y(d.Budget) - 5; })
+    .text(function(d) { return d.Team; })
+    .attr("font-size", "10px")
+    .attr("fill", "#fff");
+
+});
+
+});
+</script>
